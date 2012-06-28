@@ -309,6 +309,27 @@ PlaylistContainer_add_new_playlist(PlaylistContainer *pc, PyObject *args)
         return NULL;
 }
 
+static PyObject *
+PlaylistContainer_remove_playlist(PlaylistContainer *pc, PyObject *args)
+{
+    sp_error error;
+    int index;
+
+    if (!sp_playlistcontainer_is_loaded(pc->_playlistcontainer)) {
+        PyErr_SetString(SpotifyError, "PlaylistContainer not loaded");
+        return NULL;
+    }
+    if (!PyArg_ParseTuple(args, "i", &index))
+        return NULL;
+    error =
+        sp_playlistcontainer_remove_playlist(pc->_playlistcontainer, index);
+    if (error != SP_ERROR_OK) {
+        PyErr_SetString(SpotifyError, sp_error_message(error));
+        return NULL;
+    }
+    Py_RETURN_NONE;
+}
+
 /// PlaylistContainer Get Item []
 PyObject *
 PlaylistContainer_sq_item(PyObject *o, Py_ssize_t index)
@@ -373,6 +394,10 @@ static PyMethodDef PlaylistContainer_methods[] = {
      (PyCFunction)PlaylistContainer_add_new_playlist,
      METH_VARARGS,
      "Add a new empty playlist to the playlist container."},
+    {"remove_playlist",
+     (PyCFunction)PlaylistContainer_remove_playlist,
+     METH_VARARGS,
+     "Remove a playlist from the playlist container."},
     {NULL}
 };
 
