@@ -57,12 +57,14 @@ AlbumBrowser_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
             userdata = Py_None;
         cb = create_trampoline(callback, NULL, userdata);
     }
+    Py_BEGIN_ALLOW_THREADS;
     self->_browser =
         sp_albumbrowse_create(g_session,
                                ((Album *) album)->_album,
                                (albumbrowse_complete_cb *)
                                AlbumBrowser_browse_complete,
                                cb);
+    Py_END_ALLOW_THREADS;
     return (PyObject *)self;
 }
 

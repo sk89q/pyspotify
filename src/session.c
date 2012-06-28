@@ -184,7 +184,9 @@ Session_play(Session * self, PyObject *args)
 static PyObject *
 Session_unload(Session * self)
 {
+    Py_BEGIN_ALLOW_THREADS;
     sp_session_player_unload(self->_session);
+    Py_END_ALLOW_THREADS;
     Py_RETURN_NONE;
 }
 
@@ -307,7 +309,9 @@ Session_image_create(Session * self, PyObject *args)
         PyErr_SetString(SpotifyError, "Image id length != 20");
         return NULL;
     }
+    Py_BEGIN_ALLOW_THREADS;
     image = sp_image_create(self->_session, image_id);
+    Py_END_ALLOW_THREADS;
     return Image_FromSpotify(image);
 }
 

@@ -73,6 +73,7 @@ ArtistBrowser_new(PyTypeObject * type, PyObject *args, PyObject *kwds)
             userdata = Py_None;
         cb = create_trampoline(callback, NULL, userdata);
     }
+    Py_BEGIN_ALLOW_THREADS;
     self->_browser =
         sp_artistbrowse_create(g_session,
                                ((Artist *) artist)->_artist,
@@ -80,6 +81,7 @@ ArtistBrowser_new(PyTypeObject * type, PyObject *args, PyObject *kwds)
                                (artistbrowse_complete_cb *)
                                ArtistBrowser_browse_complete,
                                cb);
+    Py_END_ALLOW_THREADS;
     return (PyObject *)self;
 }
 
